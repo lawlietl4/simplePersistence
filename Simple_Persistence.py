@@ -8,41 +8,57 @@ large_path = os.path.curdir + "\\Assignment 1 - data\\large\\"
 long_serializing = os.curdir + "\\Assignment 1 - data\\long serialized\\"
 
 class Employee(object):
-    def __init__(self, id, firstname, lastname, year):
+    def __init__(self, employee_id, firstname, lastname, year):
         self.firstname = firstname
         self.lastname = lastname
         self.year = year
-        self.id = id
+        self.employee_id = employee_id
     def __str__(self):
-        string = f"{self.firstname}, {self.lastname} hired in: {self.year} with id number: {self.id}"
+        string = f"{self.firstname}, {self.lastname} hired in: {self.year} with id number: {self.employee_id}"
         return string
 
 class LargeEmployee(Employee):
     someData = []
 
-def addemployee(id, firstname, lastname, hiredate):
-    with open(long_path+'!2.txt', 'w+') as f:
-        instream = id, firstname, lastname, hiredate
+def addemployee(employee_id, firstname, lastname, hiredate):
+    with open(long_path+f'{employee_id}'+'.txt', 'w+') as f:
+        instream = f"{employee_id}, {firstname}, {lastname}, {hiredate}\n"
+        instream = instream.swapcase()
         f.write(instream)
         f.close()
 
-def deleteemployee(id, directory):
-    path = os.path.curdir+"\\Assignment 1 - data\\"+directory
+def deleteemployee(employee_id, directory):
+    path = os.path.curdir+"\\Assignment 1 - data\\"+directory+'\\'
     try:
-        if id in directory:
-            os.remove(path)
+        if employee_id+'.txt' in os.listdir(path):
+            os.remove(path+employee_id+'.txt')
         else:
             print("The file you were looking for could not be found")
     except RuntimeError:
         print("You broke something, great job")
 
-def updateemployee(id, firstname, lastname, hiredate):
+def updateemployee(employee_id, firstname, lastname, hiredate):
     # updates file with the records you designate
     # cannot change id (like a primary key)
     for f in os.listdir(os.path.curdir+"\\Assignment 1 - data\\"):
-        for s in os.listdir(os.path.curdir+"\\Assignment 1 - data\\simple"):
-            print(s)
-    pass
+        for s in os.listdir(simple_path):
+            if employee_id+'.txt':
+                with open(simple_path+employee_id+'.txt','w') as f:
+                    f.write(f'{employee_id}, {firstname}, {lastname}, {hiredate}\n'.swapcase())
+            else:
+                break
+        for la in os.listdir(large_path):
+            if employee_id+'.txt':
+                with open(large_path+employee_id+'.txt', 'w') as f:
+                    f.write(f'{employee_id}, {firstname}, {lastname}, {hiredate}\n'.swapcase())
+            else:
+                break
+        for lo in os.listdir(long_path):
+            if employee_id+'.txt':
+                with open(long_path+employee_id+'.txt','w') as f:
+                    f.write(f'{employee_id}, {firstname}, {lastname}, {hiredate}\n'.swapcase())
+            else:
+                break
 
 def serializeallemployee():
     # iterate through long dir and create Employee object from file
@@ -61,21 +77,21 @@ def serializeallemployee():
     noserial.close()
     serialized.close()
 
-def getserializedemployee(id):
+def getserializedemployee(employee_id):
     # id is the param and will search for the file with the input id
     # returns the deserialized data as an Employee object
-    id = 0
-    firstname = ""
-    lastname = ""
-    year = 0
     for f in os.listdir(long_serializing):
-        if(f.startswith(id)):
-            f = open(long_serializing+id + '.ser')
-        o_file = f.readlines()
-        for n in o_file:
-            data = n.split()
-    out = Employee(id, firstname, lastname, year)
-    pass
+        if(f.startswith(employee_id)):
+            with open(long_serializing+employee_id+'.ser','rb')as f:
+                data = pickle.Unpickler(f).load()
+                elements = data.split(', ')
+                employee_id = elements[0]
+                firstname = elements[1]
+                lastname = elements[2]
+                year = elements[3]
+                year = year.strip('\n')
+                out = Employee(employee_id, firstname, lastname, year)
+    print(out)
 
 def printemployees(path):
     e = Employee(0,"","",0)
@@ -93,12 +109,12 @@ def printemployees(path):
             print(e)
 
 def printpeopledetails(path):
-    for f_name in os.listdir(path):
+    for f_name in os.listdir(os.path.curdir+'\\Assignment 1 - data\\'+path+'\\'):
         if f_name.endswith('.txt'):
-            simple_file = open(path+f_name, "r")
+            simple_file = open(os.path.curdir+'\\Assignment 1 - data\\'+path+'\\'+f_name, "r")
         s_file = simple_file.readlines()
         for entry in s_file:
             print(entry)
     simple_file.close()
 
-updateemployee(1,"Vera", "Lambert", 1988)
+updateemployee('10000','vera','lambert','1988')

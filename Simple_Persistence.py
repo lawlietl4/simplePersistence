@@ -6,6 +6,7 @@ simple_path = os.path.curdir + "\\Assignment 1 - data\\simple\\"
 long_path = os.path.curdir + "\\Assignment 1 - data\\long\\"
 large_path = os.path.curdir + "\\Assignment 1 - data\\large\\"
 long_serializing = os.curdir + "\\Assignment 1 - data\\long serialized\\"
+large_serialized= os.curdir + "\\Assignment 1 - data\\large serialized\\"
 
 class Employee(object):
     def __init__(self, employee_id, firstname, lastname, year):
@@ -41,24 +42,20 @@ def updateemployee(employee_id, firstname, lastname, hiredate):
     # updates file with the records you designate
     # cannot change id (like a primary key)
     for f in os.listdir(os.path.curdir+"\\Assignment 1 - data\\"):
-        for s in os.listdir(simple_path):
-            if employee_id+'.txt':
-                with open(simple_path+employee_id+'.txt','w') as f:
-                    f.write(f'{employee_id}, {firstname}, {lastname}, {hiredate}\n'.swapcase())
-            else:
+        if os.path.exists(simple_path+employee_id+'.txt'):
+            with open(simple_path+employee_id+'.txt','w+') as fi:
+                fi.write(f'{employee_id}, {firstname}, {lastname}, {hiredate}\n'.swapcase())
                 break
-        for la in os.listdir(large_path):
-            if employee_id+'.txt':
-                with open(large_path+employee_id+'.txt', 'w') as f:
-                    f.write(f'{employee_id}, {firstname}, {lastname}, {hiredate}\n'.swapcase())
-            else:
+        elif os.path.exists(large_path+employee_id+'.txt'):
+            with open(large_path+employee_id+'.txt', 'w+') as fi:
+                fi.write(f'{employee_id}, {firstname}, {lastname}, {hiredate}\n'.swapcase())
                 break
-        for lo in os.listdir(long_path):
-            if employee_id+'.txt':
-                with open(long_path+employee_id+'.txt','w') as f:
-                    f.write(f'{employee_id}, {firstname}, {lastname}, {hiredate}\n'.swapcase())
-            else:
+        elif os.path.exists(long_path+employee_id+'.txt'):
+            with open(long_path+employee_id+'.txt','w+') as fi:
+                fi.write(f'{employee_id}, {firstname}, {lastname}, {hiredate}\n'.swapcase())
                 break
+        else:
+            break
 
 def serializeallemployee():
     # iterate through long dir and create Employee object from file
@@ -74,8 +71,8 @@ def serializeallemployee():
             serialized = open(long_serializing+e.replace('.txt','.ser',-1), 'wb')
             for d in dumper:
                 pickle.dump(d, serialized)
-    noserial.close()
-    serialized.close()
+        noserial.close()
+        serialized.close()
 
 def getserializedemployee(employee_id):
     # id is the param and will search for the file with the input id
@@ -111,10 +108,11 @@ def printemployees(path):
 def printpeopledetails(path):
     for f_name in os.listdir(os.path.curdir+'\\Assignment 1 - data\\'+path+'\\'):
         if f_name.endswith('.txt'):
-            simple_file = open(os.path.curdir+'\\Assignment 1 - data\\'+path+'\\'+f_name, "r")
-        s_file = simple_file.readlines()
-        for entry in s_file:
-            print(entry)
-    simple_file.close()
+            with open(os.path.curdir+'\\Assignment 1 - data\\'+path+'\\'+f_name, "r") as simple_file:
+                s_file = simple_file.readlines()
+                for entry in s_file:
+                    print(entry)
 
-updateemployee('10000','vera','lambert','1988')
+
+
+updateemployee('1','vera','lambert','1920')
